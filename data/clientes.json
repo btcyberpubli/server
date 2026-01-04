@@ -1,0 +1,26 @@
+{
+  "clientes": [
+    {
+      "id": "cli-001",
+      "nombre": "Juan Pérez",
+      "email": "juan@email.com",
+      "telefono": "1234567890",
+      "direccion": "Calle 1, Apto 101",
+      "ciudad": "Buenos Aires",
+      "deuda_total": 0.00,
+      "activo": true,
+      "fecha_registro": "2025-12-01T00:00:00Z"
+    },
+    {
+      "id": "cli-002",
+      "nombre": "María García",
+      "email": "maria@email.com",
+      "telefono": "0987654321",
+      "direccion": "Avenida 2, Dpto 202",
+      "ciudad": "CABA",
+      "deuda_total": 0.00,
+      "activo": true,
+      "fecha_registro": "2025-12-03T00:00:00Z"
+    }
+  ]
+}

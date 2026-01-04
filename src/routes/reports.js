@@ -1,0 +1,62 @@
+const express = require('express');
+const router = express.Router();
+const reporteService = require('../services/reporteService');
+
+// GET /api/reportes/ganancias-mensuales
+router.get('/ganancias-mensuales', (req, res) => {
+  const mes = parseInt(req.query.mes) || new Date().getMonth() + 1;
+  const anio = parseInt(req.query.anio) || new Date().getFullYear();
+
+  const reporte = reporteService.gananciasMensuales(mes, anio);
+
+  if (!reporte) {
+    return res.status(400).json({ error: 'Error al generar reporte' });
+  }
+
+  res.json({
+    exito: true,
+    reporte
+  });
+});
+
+// GET /api/reportes/top-productos
+router.get('/top-productos', (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  const mes = req.query.mes ? parseInt(req.query.mes) : null;
+  const anio = req.query.anio ? parseInt(req.query.anio) : null;
+
+  const top = reporteService.topProductosVendidos(limit, mes, anio);
+
+  res.json({
+    exito: true,
+    cantidad: top.length,
+    productos: top
+  });
+});
+
+// GET /api/reportes/stock-bajo
+router.get('/stock-bajo', (req, res) => {
+  const productos = reporteService.productosBajoStock();
+
+  res.json({
+    exito: true,
+    cantidad: productos.length,
+    productos
+  });
+});
+
+// GET /api/reportes/resumen-general
+router.get('/resumen-general', (req, res) => {
+  const resumen = reporteService.resumenGeneral();
+
+  if (!resumen) {
+    return res.status(400).json({ error: 'Error al generar resumen' });
+  }
+
+  res.json({
+    exito: true,
+    resumen
+  });
+});
+
+module.exports = router;

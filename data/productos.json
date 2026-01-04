@@ -1,0 +1,28 @@
+{
+  "productos": [
+    {
+      "id": "prod-001",
+      "nombre": "Laptop HP",
+      "costo": 450.00,
+      "precio_venta": 750.00,
+      "fecha_ingreso": "2025-12-01T10:00:00Z",
+      "stock_actual": 15,
+      "stock_minimo": 5,
+      "unidad": "unidad",
+      "activo": true,
+      "descuento_aplicado": 0
+    },
+    {
+      "id": "prod-002",
+      "nombre": "Mouse inalámbrico",
+      "costo": 5.00,
+      "precio_venta": 12.99,
+      "fecha_ingreso": "2025-12-05T10:00:00Z",
+      "stock_actual": 120,
+      "stock_minimo": 20,
+      "unidad": "unidad",
+      "activo": true,
+      "descuento_aplicado": 0
+    }
+  ]
+}

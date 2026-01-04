@@ -1,0 +1,14 @@
+{
+  "usuarios": [
+    {
+      "id": "admin-001",
+      "usuario": "admin",
+      "contraseña": "admin123",
+      "nombre": "Administrador",
+      "email": "admin@sistema.com",
+      "rol": "admin",
+      "activo": true,
+      "fecha_creacion": "2026-01-01T00:00:00Z"
+    }
+  ]
+}
