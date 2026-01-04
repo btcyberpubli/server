@@ -12,6 +12,7 @@ const allowedOrigins = [
   'https://inventario-sistema-front.vercel.app', // Vercel frontend
   'http://148.230.72.182', // VPS local
   'http://localhost', // Desarrollo
+  'https://server-production-6fa6.up.railway.app', // Railway backend
 ];
 
 // Middleware CORS personalizado
