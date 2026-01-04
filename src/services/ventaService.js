@@ -42,7 +42,7 @@ function obtenerVentaPorId(idVenta) {
   return { venta, detalles };
 }
 
-function crearVenta(idCliente, referencia = '') {
+function crearVenta(idCliente, referencia = '', tipoPago = 'deuda', montoPagado = 0, deuda = 0) {
   const datos = leerJSON('ventas');
   if (!datos) return { error: 'Error al leer datos' };
 
@@ -63,7 +63,10 @@ function crearVenta(idCliente, referencia = '') {
     estado: 'pendiente',
     referencia: referencia || '',
     items_cantidad: 0,
-    ganancia_total: 0
+    ganancia_total: 0,
+    tipo_pago: tipoPago, // 'efectivo', 'deuda', 'parcial'
+    monto_pagado: montoPagado,
+    deuda_generada: deuda
   };
 
   if (!datos.ventas) datos.ventas = [];
@@ -194,12 +197,41 @@ function confirmarVenta(idVenta) {
     }
   }
 
-  // Actualizar estado y agregar deuda al cliente
+  // Actualizar estado y procesar pago según tipo
   venta.estado = 'confirmada';
   venta.fecha_confirmacion = new Date().toISOString();
 
-  // Agregar deuda al cliente
-  clienteService.actualizarDeuda(venta.cliente, venta.total, 'agregar');
+  // Obtener cliente actual
+  const cliente = clienteService.obtenerClientePorId(venta.cliente);
+  if (!cliente) {
+    return { error: 'Cliente no encontrado al confirmar venta' };
+  }
+
+  // Procesar según tipo de pago
+  if (venta.tipo_pago === 'efectivo') {
+    // Pago en efectivo: se registra monto pagado, sin deuda
+    venta.deuda_generada = 0;
+    venta.monto_pagado = venta.total;
+    cliente.total_pagado = (cliente.total_pagado || 0) + venta.total;
+  } else if (venta.tipo_pago === 'deuda') {
+    // Compra a crédito: todo el monto es deuda
+    venta.deuda_generada = venta.total;
+    venta.monto_pagado = 0;
+    cliente.deuda_total = (cliente.deuda_total || 0) + venta.total;
+  } else if (venta.tipo_pago === 'parcial') {
+    // Pago parcial: monto_pagado es registrado, el resto es deuda
+    const montoPagado = venta.monto_pagado || 0;
+    const deudaGenerada = venta.total - montoPagado;
+    venta.deuda_generada = deudaGenerada;
+    cliente.total_pagado = (cliente.total_pagado || 0) + montoPagado;
+    cliente.deuda_total = (cliente.deuda_total || 0) + deudaGenerada;
+  }
+
+  // Actualizar cliente en base de datos
+  const resultUpdate = clienteService.actualizarCliente(cliente.id, cliente);
+  if (resultUpdate.error) {
+    return { error: `Error al actualizar cliente: ${resultUpdate.error}` };
+  }
 
   escribirJSON('ventas', datos);
 
@@ -207,7 +239,8 @@ function confirmarVenta(idVenta) {
     exito: true,
     venta,
     detalles,
-    mensaje: `Venta ${idVenta} confirmada. Deuda registrada en cliente.`
+    cliente: cliente,
+    mensaje: `Venta ${idVenta} confirmada. Pago tipo: ${venta.tipo_pago}.`
   };
 }
 

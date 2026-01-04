@@ -33,13 +33,26 @@ router.get('/:id', (req, res) => {
 
 // POST /api/ventas
 router.post('/', (req, res) => {
-  const { id_cliente, referencia } = req.body;
+  const { id_cliente, referencia, tipo_pago, monto_pagado } = req.body;
 
   if (!id_cliente) {
     return res.status(400).json({ error: 'ID de cliente es requerido' });
   }
 
-  const resultado = ventaService.crearVenta(id_cliente, referencia);
+  // Validar tipo_pago
+  const tiposPagoValidos = ['efectivo', 'deuda', 'parcial'];
+  const tipoPago = tipo_pago || 'deuda';
+  
+  if (!tiposPagoValidos.includes(tipoPago)) {
+    return res.status(400).json({ error: 'Tipo de pago inválido. Debe ser: efectivo, deuda o parcial' });
+  }
+
+  // Para pago parcial, monto_pagado es requerido
+  if (tipoPago === 'parcial' && (!monto_pagado || monto_pagado <= 0)) {
+    return res.status(400).json({ error: 'Para pago parcial, monto_pagado es requerido y debe ser mayor a 0' });
+  }
+
+  const resultado = ventaService.crearVenta(id_cliente, referencia || '', tipoPago, monto_pagado || 0, 0);
 
   if (resultado.error) {
     return res.status(400).json({ error: resultado.error });

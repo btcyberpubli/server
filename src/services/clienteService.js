@@ -55,6 +55,7 @@ function crearCliente(nombre, email, telefono, direccion, ciudad) {
     direccion: direccion || '',
     ciudad: ciudad || '',
     deuda_total: 0,
+    total_pagado: 0,
     activo: true,
     fecha_registro: new Date().toISOString()
   };
@@ -83,6 +84,7 @@ function actualizarDeuda(idCliente, monto, tipo = 'agregar') {
       return { error: `Deuda insuficiente. Deuda actual: ${cliente.deuda_total}` };
     }
     cliente.deuda_total -= monto;
+    cliente.total_pagado = (cliente.total_pagado || 0) + monto;
   } else {
     return { error: 'Tipo de movimiento inválido' };
   }
@@ -96,8 +98,30 @@ function actualizarDeuda(idCliente, monto, tipo = 'agregar') {
     exito: true,
     deuda_anterior,
     deuda_actual: cliente.deuda_total,
+    total_pagado: cliente.total_pagado,
     cliente: cliente
   };
+}
+
+function actualizarCliente(idCliente, datosActualizados) {
+  const datos = leerJSON('clientes');
+  if (!datos) return { error: 'Error al leer datos' };
+
+  const index = datos.clientes.findIndex(c => c.id === idCliente);
+  if (index === -1) {
+    return { error: 'Cliente no encontrado' };
+  }
+
+  // Preservar propiedades inmutables
+  datosActualizados.id = datos.clientes[index].id;
+  datosActualizados.fecha_registro = datos.clientes[index].fecha_registro;
+
+  // Actualizar cliente
+  datos.clientes[index] = { ...datos.clientes[index], ...datosActualizados };
+
+  escribirJSON('clientes', datos);
+
+  return { exito: true, cliente: datos.clientes[index] };
 }
 
 function pagarDeuda(idCliente, monto) {
@@ -113,5 +137,6 @@ module.exports = {
   obtenerClientePorId,
   crearCliente,
   actualizarDeuda,
+  actualizarCliente,
   pagarDeuda
 };

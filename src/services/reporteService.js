@@ -1,6 +1,7 @@
 const { leerJSON } = require('../utils/helpers');
 const ventaService = require('./ventaService');
 const productoService = require('./productoService');
+const historicoService = require('./historicoService');
 
 /**
  * SERVICIO DE REPORTES
@@ -21,7 +22,7 @@ function gananciasMensuales(mes, anio = new Date().getFullYear()) {
   const ventasTotalMes = ventasDelMes.reduce((sum, v) => sum + v.total, 0);
   const costoTotalMes = ventasDelMes.reduce((sum, v) => sum + (v.subtotal - v.ganancia_total), 0);
 
-  return {
+  const resultado = {
     mes,
     anio,
     cantidad_ventas: ventasDelMes.length,
@@ -37,6 +38,13 @@ function gananciasMensuales(mes, anio = new Date().getFullYear()) {
       ganancia: v.ganancia_total
     }))
   };
+
+  // Guardar copia histórica si hay ventas
+  if (resultado.cantidad_ventas > 0) {
+    historicoService.guardarHistoricoMensual(anio, mes);
+  }
+
+  return resultado;
 }
 
 function topProductosVendidos(limit = 10, mes = null, anio = null) {

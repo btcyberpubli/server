@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const reporteService = require('../services/reporteService');
+const historicoService = require('../services/historicoService');
 
 // GET /api/reportes/ganancias-mensuales
 router.get('/ganancias-mensuales', (req, res) => {
@@ -56,6 +57,38 @@ router.get('/resumen-general', (req, res) => {
   res.json({
     exito: true,
     resumen
+  });
+});
+
+// GET /api/reportes/historico
+router.get('/historico', (req, res) => {
+  const historicos = historicoService.listarHistoricos();
+
+  res.json({
+    exito: true,
+    cantidad: historicos.length,
+    historicos
+  });
+});
+
+// GET /api/reportes/historico/:año/:mes
+router.get('/historico/:año/:mes', (req, res) => {
+  const año = parseInt(req.params.año);
+  const mes = parseInt(req.params.mes);
+
+  if (isNaN(año) || isNaN(mes) || mes < 1 || mes > 12) {
+    return res.status(400).json({ error: 'Año o mes inválido' });
+  }
+
+  const historico = historicoService.obtenerHistoricoMensual(año, mes);
+
+  if (!historico) {
+    return res.status(404).json({ error: 'No hay datos históricos para este período' });
+  }
+
+  res.json({
+    exito: true,
+    historico
   });
 });
 
