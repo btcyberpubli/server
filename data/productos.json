@@ -7,7 +7,7 @@
       "precio_venta": 750.00,
       "fecha_ingreso": "2025-12-01T10:00:00Z",
       "stock_actual": 15,
-      "stock_minimo": 5,
+      "stock_minimo": 10,
       "unidad": "unidad",
       "activo": true,
       "descuento_aplicado": 0
