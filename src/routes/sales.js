@@ -172,5 +172,6 @@ router.post('/calcular-descuento', async (req, res) => {
     console.error('Error al calcular descuento:', error);
     res.status(500).json({ error: 'Error al calcular descuento' });
   }
+});
 
 module.exports = router;
