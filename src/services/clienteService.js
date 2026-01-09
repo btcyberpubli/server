@@ -35,22 +35,28 @@ function crearCliente(nombre, email, telefono, direccion, ciudad) {
     return { error: 'El nombre es requerido' };
   }
 
-  if (!email || email.trim() === '') {
-    return { error: 'El email es requerido' };
-  }
-
   const datos = leerJSON('clientes');
   if (!datos) return { error: 'Error al leer datos' };
 
-  const clienteExistente = datos.clientes.find(c => c.email === email);
+  // Validar que el nombre no esté duplicado
+  const nombreNormalizado = nombre.trim().toLowerCase();
+  const clienteExistente = datos.clientes.find(c => c.nombre.toLowerCase() === nombreNormalizado);
   if (clienteExistente) {
+    return { error: 'Ya existe un cliente con este nombre' };
+  }
+
+  // Email es opcional, si no se proporciona, generar uno único
+  let emailFinal = email?.trim() || `cliente.${generarId('email')}@temporal.com`;
+
+  const clienteConEmailExistente = datos.clientes.find(c => c.email === emailFinal);
+  if (clienteConEmailExistente) {
     return { error: 'Este email ya está registrado' };
   }
 
   const nuevoCliente = {
     id: generarId('cli'),
     nombre: nombre.trim(),
-    email: email.trim(),
+    email: emailFinal,
     telefono: telefono || '',
     direccion: direccion || '',
     ciudad: ciudad || '',

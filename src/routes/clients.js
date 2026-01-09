@@ -35,8 +35,8 @@ router.get('/:id', (req, res) => {
 router.post('/', (req, res) => {
   const { nombre, email, telefono, direccion, ciudad } = req.body;
 
-  if (!nombre || !email) {
-    return res.status(400).json({ error: 'Nombre y email son requeridos' });
+  if (!nombre) {
+    return res.status(400).json({ error: 'Nombre es requerido' });
   }
 
   const resultado = clienteService.crearCliente(nombre, email, telefono, direccion, ciudad);
