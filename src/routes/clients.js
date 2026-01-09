@@ -65,4 +65,15 @@ router.post('/:id/pagar-deuda', (req, res) => {
   res.json(resultado);
 });
 
+// DELETE /api/clientes/:id
+router.delete('/:id', (req, res) => {
+  const resultado = clienteService.eliminarCliente(req.params.id);
+
+  if (resultado.error) {
+    return res.status(400).json({ error: resultado.error });
+  }
+
+  res.json(resultado);
+});
+
 module.exports = router;

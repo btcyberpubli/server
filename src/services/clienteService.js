@@ -138,11 +138,32 @@ function pagarDeuda(idCliente, monto) {
   return actualizarDeuda(idCliente, monto, 'pagar');
 }
 
+function eliminarCliente(idCliente) {
+  const datos = leerJSON('clientes');
+  if (!datos) return { error: 'Error al leer datos' };
+
+  const index = datos.clientes.findIndex(c => c.id === idCliente);
+  if (index === -1) {
+    return { error: 'Cliente no encontrado' };
+  }
+
+  const clienteEliminado = datos.clientes[index];
+  datos.clientes.splice(index, 1);
+  escribirJSON('clientes', datos);
+
+  return { 
+    exito: true, 
+    mensaje: `Cliente "${clienteEliminado.nombre}" eliminado correctamente`,
+    cliente: clienteEliminado
+  };
+}
+
 module.exports = {
   obtenerClientes,
   obtenerClientePorId,
   crearCliente,
   actualizarDeuda,
   actualizarCliente,
-  pagarDeuda
+  pagarDeuda,
+  eliminarCliente
 };
