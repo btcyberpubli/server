@@ -1,517 +1,272 @@
-# 📊 SISTEMA DE GESTIÓN DE INVENTARIO Y VENTAS
+# 🎨 FRONTEND - Sistema de Inventario y Ventas
 
-Backend completo basado en Node.js + Express + JSON
+Frontend HTML5 + CSS3 + Vanilla JavaScript puro (sin dependencias)
+
+## ✨ Características
+
+✅ **Autenticación con JWT**
+- Login seguro con usuario y contraseña
+- Tokens almacenados en localStorage
+- Logout automático
+
+✅ **Dashboard Intuitivo**
+- 4 botones grandes y claros
+- Resumen rápido de métricas
+- Responsive (mobile-friendly)
+
+✅ **Funcionalidades**
+1. **Agregar Stock** - Incrementar inventario de productos
+2. **Ver Stock** - Visualizar inventario completo
+3. **Generar Venta** - Crear ventas con múltiples productos y descuentos
+4. **Reportes** - Ganancias mensuales, top productos, stock bajo
+
+✅ **Diseño Moderno**
+- Interfaz limpia y profesional
+- Colores personalizados
+- Animaciones suaves
+- Notificaciones emergentes
+
+## 📁 Estructura
+
+```
+front/
+├── index.html              (Página de login)
+├── dashboard.html          (Panel principal)
+├── assets/
+│   ├── css/
+│   │   └── styles.css      (Estilos globales)
+│   └── js/
+│       ├── config.js       (Configuración y utilidades)
+│       └── app.js          (Lógica principal)
+└── README.md
+```
 
 ## 🚀 INICIO RÁPIDO
 
-### Instalación
+### Opción 1: Servidor Local (Python)
+
 ```bash
-cd back
-npm install
+cd front
+python -m http.server 8000
+# Accede a http://localhost:8000
 ```
 
-### Ejecutar servidor
+### Opción 2: Servidor Local (Node.js)
+
 ```bash
-npm start           # Producción
-npm run dev         # Desarrollo (con watch)
+cd front
+npx http-server
+# Accede a http://localhost:8080
 ```
 
-El servidor se ejecutará en **http://localhost:3000**
+### Opción 3: Servidor Local (PHP)
 
----
+```bash
+cd front
+php -S localhost:8000
+# Accede a http://localhost:8000
+```
 
-## 🔐 AUTENTICACIÓN
+### Opción 4: Directamente en el navegador
 
-### Credenciales de inicio
+Simplemente abre `index.html` en tu navegador (funciona pero con limitaciones CORS en localhost).
+
+## ⚙️ Configuración de API
+
+Edita `assets/js/config.js`:
+
+**Desarrollo (localhost):**
+```javascript
+const API_URL = 'http://localhost:3000/api';
+```
+
+**Producción (VPS):**
+```javascript
+const API_URL = 'http://148.230.72.182/api';
+```
+
+## 🔐 Credenciales de Demo
+
 ```
 Usuario: admin
 Contraseña: admin123
 ```
 
-### Login
-```bash
-POST /api/auth/login
-Content-Type: application/json
+## 📱 Uso
 
-{
-  "usuario": "admin",
-  "contraseña": "admin123"
+### 1. Login
+- Ingresa las credenciales
+- Se genera un token JWT válido por 24 horas
+
+### 2. Dashboard
+Ve el resumen de:
+- Productos activos y bajo stock
+- Valor total del inventario
+- Ventas confirmadas
+- Ganancia total histórica
+- Deuda total de clientes
+
+### 3. Agregar Stock
+1. Selecciona un producto
+2. Ingresa cantidad a agregar
+3. El stock se actualiza automáticamente
+
+### 4. Ver Stock
+- Tabla completa de inventario
+- Muestra stock actual, mínimo y estado
+- Indicador visual de stock bajo
+
+### 5. Generar Venta
+**Paso 1:** Selecciona cliente
+**Paso 2:** Agrega productos
+- Selecciona producto
+- Ingresa cantidad
+- Aplica descuento (%)
+- Botón "Agregar Producto"
+- Puedes agregar múltiples productos
+- Ver resumen en tiempo real
+**Paso 3:** Confirmar
+- Se descuenta stock
+- Se registra deuda del cliente
+- Se genera fecha automáticamente
+
+### 6. Reportes
+- **Ganancias Mensuales:** Selecciona mes, ve ganancia, costo, ingresos
+- **Top Productos:** Los 10 más vendidos
+- **Stock Bajo:** Productos bajo stock mínimo
+
+## 🎨 Personalización
+
+### Cambiar colores
+
+Edita `:root` en `assets/css/styles.css`:
+
+```css
+:root {
+  --color-primary: #2563eb;      /* Azul */
+  --color-success: #10b981;      /* Verde */
+  --color-danger: #ef4444;       /* Rojo */
+  --color-warning: #f59e0b;      /* Naranja */
 }
 ```
 
-**Respuesta:**
-```json
-{
-  "exito": true,
-  "usuario": {
-    "id": "admin-001",
-    "usuario": "admin",
-    "nombre": "Administrador",
-    "rol": "admin"
-  },
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
+### Cambiar logos/textos
+
+Busca `📦` o `💰` en `dashboard.html` y reemplaza.
+
+## 🔗 Integración con Backend
+
+El frontend hace peticiones HTTP/JSON al backend:
+
+```javascript
+// Ejemplo: Crear venta
+await fetchAPI('/ventas', 'POST', {
+  id_cliente: 'cli-001',
+  referencia: 'Venta mostrador'
+});
 ```
 
-**Usar token en todas las peticiones:**
+Todas las peticiones incluyen automáticamente el token JWT en el header `Authorization`.
+
+## 📱 Responsive Design
+
+✅ Desktop (1200px+)
+✅ Tablet (768px - 1199px)
+✅ Mobile (<768px)
+
+Botones se adaptan al tamaño de pantalla.
+
+## 🐛 Troubleshooting
+
+### "CORS error"
+- Asegúrate que el backend está ejecutándose
+- Verifica la URL en `config.js`
+- El backend debe permitir CORS (ya viene configurado)
+
+### "Token inválido"
+- Hace login nuevamente
+- Limpia localStorage: `localStorage.clear()`
+- Verifica que el backend esté corriendo
+
+### "No carga productos"
+- Backend debe tener productos en `/data/productos.json`
+- Ejecuta primero el script de prueba
+
+## 🚀 Despliegue en Producción
+
+### Con Nginx
+
 ```bash
-Authorization: Bearer <token>
+# En el VPS
+sudo cp -r front /var/www/
+sudo nano /etc/nginx/sites-available/inventario-front
 ```
 
----
+```nginx
+server {
+    listen 80;
+    server_name 148.230.72.182;
 
-## 📦 PRODUCTOS
-
-### Listar productos
-```bash
-GET /api/productos
-GET /api/productos?activo=true
-GET /api/productos?stock_bajo=true
-```
-
-### Obtener producto por ID
-```bash
-GET /api/productos/prod-001
-```
-
-### Crear producto
-```bash
-POST /api/productos
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "nombre": "Teclado Mecánico RGB",
-  "costo": 25.00,
-  "precio_venta": 59.99,
-  "stock_minimo": 3,
-  "unidad": "unidad"
-}
-```
-
-### Actualizar stock
-```bash
-POST /api/productos/prod-001/stock
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "cantidad": 20,
-  "tipo": "entrada"    // O "salida"
-}
-```
-
-### Aplicar descuento a producto
-```bash
-POST /api/productos/prod-001/descuento
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "porcentaje": 10
-}
-```
-
----
-
-## 👥 CLIENTES
-
-### Listar clientes
-```bash
-GET /api/clientes
-GET /api/clientes?con_deuda=true
-```
-
-### Obtener cliente
-```bash
-GET /api/clientes/cli-001
-```
-
-### Crear cliente
-```bash
-POST /api/clientes
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "nombre": "Carlos López",
-  "email": "carlos@email.com",
-  "telefono": "1234567890",
-  "direccion": "Calle Principal 123",
-  "ciudad": "Buenos Aires"
-}
-```
-
-### Pagar deuda
-```bash
-POST /api/clientes/cli-001/pagar-deuda
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "monto": 150.50
-}
-```
-
----
-
-## 🛒 VENTAS
-
-### Listar ventas
-```bash
-GET /api/ventas
-GET /api/ventas?estado=confirmada
-GET /api/ventas?mes=12&anio=2025
-```
-
-**Estados:** pendiente | confirmada | anulada
-
-### Obtener venta completa
-```bash
-GET /api/ventas/vta-123456-789
-```
-
-### Crear venta (nueva)
-```bash
-POST /api/ventas
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "id_cliente": "cli-001",
-  "referencia": "Venta mostrador"
-}
-```
-
-### Agregar item a venta
-```bash
-POST /api/ventas/vta-123456-789/items
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "id_producto": "prod-001",
-  "cantidad": 2,
-  "precio_unitario": 59.99,    // Opcional, usa precio del producto
-  "descuento": 10               // Porcentaje de descuento (0-100)
-}
-```
-
-### Calcular precio con descuento
-```bash
-POST /api/ventas/calcular-descuento
-Content-Type: application/json
-Authorization: Bearer <token>
-
-{
-  "precio": 100.00,
-  "porcentaje": 15
-}
-```
-
-**Respuesta:**
-```json
-{
-  "precio_original": 100,
-  "porcentaje_descuento": 15,
-  "monto_descuento": 15.00,
-  "precio_final": 85.00
-}
-```
-
-### Confirmar venta
-```bash
-POST /api/ventas/vta-123456-789/confirmar
-Authorization: Bearer <token>
-```
-
-⚠️ Al confirmar:
-- Se descuenta el stock
-- Se registra la deuda del cliente
-- El estado cambia a "confirmada"
-
-### Anular venta
-```bash
-POST /api/ventas/vta-123456-789/anular
-Authorization: Bearer <token>
-```
-
-⚠️ Al anular:
-- Se devuelve el stock (si fue confirmada)
-- Se cancela la deuda del cliente
-- El estado cambia a "anulada"
-
-### Devolver producto de venta
-```bash
-POST /api/ventas/detalle/det-123456-789/devolver
-Authorization: Bearer <token>
-```
-
----
-
-## 📊 REPORTES
-
-### Ganancias mensuales
-```bash
-GET /api/reportes/ganancias-mensuales
-GET /api/reportes/ganancias-mensuales?mes=12&anio=2025
-```
-
-**Respuesta:**
-```json
-{
-  "exito": true,
-  "reporte": {
-    "mes": 12,
-    "anio": 2025,
-    "cantidad_ventas": 5,
-    "venta_total": 1250.50,
-    "costo_total": 625.25,
-    "ganancia_total": 625.25,
-    "ganancia_promedio_venta": 125.05,
-    "ventas_detalle": [...]
-  }
-}
-```
-
-### Top productos vendidos
-```bash
-GET /api/reportes/top-productos
-GET /api/reportes/top-productos?limit=5&mes=12&anio=2025
-```
-
-### Stock bajo
-```bash
-GET /api/reportes/stock-bajo
-```
-
-### Resumen general
-```bash
-GET /api/reportes/resumen-general
-```
-
-**Respuesta:**
-```json
-{
-  "exito": true,
-  "resumen": {
-    "fecha_reporte": "2025-12-15T10:30:00.000Z",
-    "productos": {
-      "total": 25,
-      "activos": 24,
-      "bajo_stock": 3,
-      "valor_inventario": 15450.75
-    },
-    "ventas": {
-      "total_confirmadas": 45,
-      "total_pendientes": 2,
-      "total_anuladas": 1,
-      "venta_total_historico": 12500.00,
-      "ganancia_total_historico": 5500.00
-    },
-    "clientes": {
-      "total": 18,
-      "con_deuda": 5,
-      "deuda_total": 2300.50
+    location / {
+        root /var/www/front;
+        index index.html;
+        try_files $uri $uri/ /index.html;
     }
-  }
 }
 ```
 
----
-
-## 📁 ESTRUCTURA DE DATOS
-
-### Producto
-```json
-{
-  "id": "prod-001",
-  "nombre": "Laptop HP",
-  "costo": 450.00,
-  "precio_venta": 750.00,
-  "fecha_ingreso": "2025-12-01T10:00:00Z",
-  "stock_actual": 15,
-  "stock_minimo": 5,
-  "unidad": "unidad",
-  "activo": true,
-  "descuento_aplicado": 0
-}
-```
-
-### Cliente
-```json
-{
-  "id": "cli-001",
-  "nombre": "Juan Pérez",
-  "email": "juan@email.com",
-  "telefono": "1234567890",
-  "direccion": "Calle 1, Apto 101",
-  "ciudad": "Buenos Aires",
-  "deuda_total": 0.00,
-  "activo": true,
-  "fecha_registro": "2025-12-01T00:00:00Z"
-}
-```
-
-### Venta (Cabecera)
-```json
-{
-  "id_venta": "vta-123456-789",
-  "cliente": "cli-001",
-  "cliente_nombre": "Juan Pérez",
-  "fecha": "2025-12-15T10:30:00Z",
-  "subtotal": 150.00,
-  "descuento": 15.00,
-  "total": 135.00,
-  "estado": "confirmada",
-  "items_cantidad": 2,
-  "ganancia_total": 50.00,
-  "referencia": "Venta mostrador"
-}
-```
-
-### Detalle de Venta
-```json
-{
-  "id_detalle": "det-123456-789",
-  "id_venta": "vta-123456-789",
-  "id_producto": "prod-001",
-  "producto_nombre": "Mouse inalámbrico",
-  "cantidad": 2,
-  "precio_unitario": 12.99,
-  "costo_unitario": 5.00,
-  "subtotal": 25.98,
-  "descuento_porcentaje": 10,
-  "descuento_monto": 2.60,
-  "subtotal_con_descuento": 23.38,
-  "ganancia": 15.98,
-  "fecha_registro": "2025-12-15T10:30:00Z"
-}
-```
-
----
-
-## ⚙️ REGLAS DE NEGOCIO
-
-✅ **Validaciones implementadas:**
-- ❌ No permitir vender si stock < cantidad
-- ❌ No permitir precios negativos
-- ❌ No permitir crear venta sin detalles
-- ❌ Bloquear descuentos inválidos (< 0 o > 100)
-- ❌ Precio venta >= precio costo
-- ❌ No permitir pagar deuda mayor que la adeudada
-
-✅ **Automatizaciones:**
-- Cálculo automático de subtotales y totales
-- Cálculo automático de ganancias
-- Actualización automática de stock al confirmar
-- Registro automático de deudas de clientes
-- Rollback de stock si se anula venta confirmada
-
----
-
-## 🗂️ ESTRUCTURA DE CARPETAS
-
-```
-back/
-├── src/
-│   ├── routes/
-│   │   ├── auth.js          (autenticación)
-│   │   ├── products.js      (CRUD productos)
-│   │   ├── sales.js         (CRUD ventas)
-│   │   ├── clients.js       (CRUD clientes)
-│   │   └── reports.js       (reportes)
-│   ├── services/
-│   │   ├── productoService.js
-│   │   ├── ventaService.js
-│   │   ├── clienteService.js
-│   │   └── reporteService.js
-│   └── utils/
-│       ├── auth.js          (JWT y autenticación)
-│       └── helpers.js       (utilitarios)
-├── data/
-│   ├── usuarios.json        (almacén de usuarios)
-│   ├── productos.json       (almacén de productos)
-│   ├── clientes.json        (almacén de clientes)
-│   └── ventas.json          (almacén de ventas)
-├── server.js                (entrada principal)
-├── package.json
-└── README.md
-```
-
----
-
-## 🔄 FLUJO COMPLETO DE UNA VENTA
-
-### 1. Crear venta
 ```bash
-POST /api/ventas
-{
-  "id_cliente": "cli-001"
-}
-# Respuesta: venta en estado "pendiente"
+sudo systemctl restart nginx
 ```
 
-### 2. Agregar items
+### Con Apache
+
 ```bash
-POST /api/ventas/vta-123/items
-{
-  "id_producto": "prod-001",
-  "cantidad": 2,
-  "descuento": 5
-}
-# Total se actualiza automáticamente
+sudo cp -r front /var/www/html/
+sudo nano /var/www/html/front/.htaccess
 ```
 
-### 3. Agregar más items (opcional)
-```bash
-POST /api/ventas/vta-123/items
-{
-  "id_producto": "prod-002",
-  "cantidad": 1,
-  "descuento": 0
-}
+```apache
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /front/
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /front/index.html [L]
+</IfModule>
 ```
 
-### 4. Ver venta completa
-```bash
-GET /api/ventas/vta-123
-# Muestra: venta + todos los detalles
+## 📊 Flujo Completo
+
+```
+1. Usuario abre http://148.230.72.182
+2. Ve login (index.html)
+3. Ingresa credenciales
+4. Backend valida JWT
+5. Frontend redirige a dashboard.html
+6. Dashboard carga productos, clientes y reportes
+7. Usuario interactúa con 4 botones principales
+8. Cada acción consume API del backend
+9. Cambios se reflejan en tiempo real
 ```
 
-### 5. Confirmar venta
-```bash
-POST /api/ventas/vta-123/confirmar
-# Descuenta stock, registra deuda del cliente
-```
+## 🔒 Seguridad
 
-### 6. Ver ganancias del mes
-```bash
-GET /api/reportes/ganancias-mensuales?mes=12&anio=2025
-```
+✅ Tokens JWT con expiración 24h
+✅ Contraseñas hasheadas en backend
+✅ Validación de campos en frontend y backend
+✅ CORS configurado
+✅ Sin datos sensibles en localStorage (solo token)
+
+## 📝 Notas
+
+- El frontend es completamente independiente del backend
+- Puedes cambiar la URL del API sin modificar la lógica
+- Funciona en cualquier navegador moderno
+- No requiere build tool ni compilación
+- Compatible con HTTP y HTTPS
 
 ---
 
-## 🚨 CÓDIGOS DE ERROR
-
-| Código | Mensaje | Solución |
-|--------|---------|----------|
-| 400 | Campos requeridos faltantes | Verifica JSON |
-| 400 | Stock insuficiente | Revisa cantidad |
-| 401 | Token no proporcionado | Incluye Authorization header |
-| 401 | Token inválido o expirado | Haz login nuevamente |
-| 404 | Recurso no encontrado | Verifica el ID |
-
----
-
-## 📝 NOTAS
-
-- Los datos se almacenan en archivos JSON (sin base de datos)
-- Los tokens expiran en **24 horas**
-- Los descuentos se aplican **por item** en la venta
-- La deuda se registra al **confirmar** la venta
-- Se puede devolver productos de ventas confirmadas
-
----
-
-Hecho para ejecutarse en VPS. ¡Listo para producción! 🚀
+¡Listo para usar! 🎉

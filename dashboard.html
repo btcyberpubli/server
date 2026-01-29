@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sistema de Inventario</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <h1>📦 Sistema de Inventario y Ventas</h1>
+      <div class="header-user">
+        <span id="usuarioNombre"></span>
+        <button class="btn-logout" onclick="logout()">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- DISEÑO MINIMALISTA: GENERAR VENTA (Grande) + Botones secundarios -->
+    <div class="dashboard-grid-new">
+      <!-- BOTÓN PRINCIPAL: GENERAR VENTA (50% altura) -->
+      <button class="btn-grande-principal" onclick="abrirModalGenerarVenta()">
+        <div class="btn-principal-contenido">
+          <svg fill="currentColor" viewBox="0 0 20 20" style="width: 50px; height: 50px;">
+            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+          </svg>
+          <h2>GENERAR VENTA</h2>
+        </div>
+      </button>
+
+      <!-- BOTONES SECUNDARIOS (3 columnas) -->
+      <div class="botones-secundarios">
+        <button class="btn-secundario" onclick="abrirModalAgregarStock()">
+          AGREGAR STOCK
+        </button>
+        <button class="btn-secundario" onclick="abrirModalNuevoProducto()">
+          NUEVO PRODUCTO
+        </button>
+        <button class="btn-secundario" onclick="abrirModalVerStock()">
+          VER STOCK
+        </button>
+      </div>
+
+      <!-- REPORTES (Panel inferior) -->
+      <div class="reportes-panel">
+        <button class="btn-reportes" onclick="abrirModalClientes()">
+          CLIENTES
+        </button>
+        <button class="btn-reportes" onclick="abrirModalNuevoCliente()">
+          NUEVO CLIENTE
+        </button>
+        <button class="btn-reportes" onclick="abrirModalReportes()">
+          REPORTES
+        </button>
+      </div>
+    </div>
+
+    <!-- RESUMEN RÁPIDO (Minimalista) -->
+    <div id="resumenRapido"></div>
+  </div>
+
+  <!-- ===== MODAL: AGREGAR STOCK ===== -->
+  <div id="modalAgregarStock" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>➕ Agregar Stock a Producto</h2>
+        <button class="modal-close" onclick="cerrarModal('modalAgregarStock')">&times;</button>
+      </div>
+      <form id="formAgregarStock">
+        <div class="form-group">
+          <label for="productoAStock">Producto</label>
+          <select id="productoAStock" required>
+            <option value="">Seleccionar producto...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cantidadStock">Cantidad a agregar</label>
+          <input type="number" id="cantidadStock" min="1" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalAgregarStock')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Agregar Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ===== MODAL: NUEVO PRODUCTO ===== -->
+  <div id="modalNuevoProducto" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📝 Nuevo Producto</h2>
+        <button class="modal-close" onclick="cerrarModal('modalNuevoProducto')">&times;</button>
+      </div>
+      <form id="formNuevoProducto">
+        <div class="form-group">
+          <label for="nombreProducto">Nombre del Producto</label>
+          <input type="text" id="nombreProducto" required placeholder="Ej: Laptop HP">
+        </div>
+        <div class="form-group">
+          <label for="precioCosto">Precio de Costo</label>
+          <input type="number" id="precioCosto" min="0" step="0.01" required placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label for="precioVenta">Precio de Venta</label>
+          <input type="number" id="precioVenta" min="0" step="0.01" required placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label for="stockMinimo">Stock Mínimo</label>
+          <input type="number" id="stockMinimo" value="10" required placeholder="10">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalNuevoProducto')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ===== MODAL: VER STOCK ===== -->
+  <div id="modalVerStock" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👁️ Inventario de Productos</h2>
+        <button class="modal-close" onclick="cerrarModal('modalVerStock')">&times;</button>
+      </div>
+      <table id="tablaStock">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Stock Actual</th>
+            <th>Stock Mínimo</th>
+            <th>Costo</th>
+            <th>Precio Venta</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="cerrarModal('modalVerStock')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: GENERAR VENTA ===== -->
+  <div id="modalGenerarVenta" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💰 Generar Nueva Venta</h2>
+        <button class="modal-close" onclick="cerrarModal('modalGenerarVenta')">&times;</button>
+      </div>
+
+      <!-- PASO 1: Seleccionar cliente -->
+      <div id="pasoCliente">
+        <h3 style="margin-bottom: 20px;">Paso 1: Seleccionar Cliente</h3>
+        <div class="form-group">
+          <label for="clienteVenta">Cliente</label>
+          <select id="clienteVenta" required>
+            <option value="">Seleccionar cliente...</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary" onclick="abrirModalNuevoClienteVenta()" style="margin-bottom: 20px; width: 100%;">+ Agregar nuevo cliente</button>
+        <button class="btn btn-primary" onclick="continuarPasoProductos()">Siguiente →</button>
+      </div>
+
+      <!-- PASO 2: Agregar productos -->
+      <div id="pasoProductos" style="display: none;">
+        <h3 style="margin-bottom: 20px;">Paso 2: Agregar Productos</h3>
+        
+        <div class="form-group">
+          <label for="productoVenta">Producto</label>
+          <select id="productoVenta" required>
+            <option value="">Seleccionar producto...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="cantidadProducto">Cantidad</label>
+          <input type="number" id="cantidadProducto" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="descuentoProducto">Descuento (%)</label>
+          <input type="number" id="descuentoProducto" min="0" max="100" value="0">
+        </div>
+
+        <button class="btn btn-success" onclick="agregarProductoVenta()">Agregar Producto</button>
+
+        <!-- Items agregados -->
+        <div id="itemsVenta" style="margin-top: 30px;"></div>
+
+        <!-- Resumen -->
+        <div class="resumen-venta" id="resumenVentaDiv" style="display: none;">
+          <div class="resumen-row">
+            <span>Subtotal:</span>
+            <span id="subtotalVenta">$0.00</span>
+          </div>
+          <div class="resumen-row">
+            <span>Descuento Total:</span>
+            <span id="descuentoVenta">$0.00</span>
+          </div>
+          <div class="resumen-row total">
+            <span>Total a Pagar:</span>
+            <span id="totalVenta">$0.00</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <button class="btn btn-secondary" onclick="volverPasoCliente()">← Anterior</button>
+          <button class="btn btn-primary" onclick="continuarPagoPaso()" style="margin-left: 10px;">Siguiente →</button>
+        </div>
+      </div>
+
+      <!-- PASO 3: Forma de Pago -->
+      <div id="pasoPago" style="display: none;">
+        <h3 style="margin-bottom: 20px;">Paso 3: Forma de Pago</h3>
+
+        <div style="background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+          <p style="margin: 0 0 15px 0; font-weight: 300; color: #1a1a1a;">Total a Pagar: <strong style="font-size: 20px;" id="totalPagoFinal">$0.00</strong></p>
+          
+          <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+            <label style="display: flex; align-items: center; cursor: pointer; padding: 12px; background: white; border-radius: 8px;">
+              <input type="radio" name="tipoPago" value="efectivo" required style="margin-right: 10px;">
+              <span>PAGA EN EFECTIVO</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer; padding: 12px; background: white; border-radius: 8px;">
+              <input type="radio" name="tipoPago" value="deuda" required style="margin-right: 10px;">
+              <span>QUEDA EN DEUDA</span>
+            </label>
+            <label style="display: flex; align-items: center; cursor: pointer; padding: 12px; background: white; border-radius: 8px;">
+              <input type="radio" name="tipoPago" value="parcial" required style="margin-right: 10px;">
+              <span>PAGO PARCIAL</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Si pago parcial, mostrar input -->
+        <div id="montoParcialdiv" style="display: none; margin-bottom: 20px;">
+          <label for="montoParcial">Monto a Pagar</label>
+          <input type="number" id="montoParcial" min="0" step="0.01" placeholder="0.00">
+          <p style="font-size: 12px; color: #666; margin-top: 5px;" id="montoRestante"></p>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <button class="btn btn-secondary" onclick="volverPasoProductos()">← Anterior</button>
+          <button class="btn btn-primary" onclick="confirmarVenta()" style="margin-left: 10px;">CONFIRMAR VENTA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: CLIENTES ===== -->
+  <div id="modalClientes" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👥 Clientes y Deudas</h2>
+        <button class="modal-close" onclick="cerrarModal('modalClientes')">&times;</button>
+      </div>
+      <table id="tablaClientes">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Deuda Total</th>
+            <th>Total Pagado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="abrirModalNuevoCliente()">+ Nuevo Cliente</button>
+        <button class="btn btn-primary" onclick="cerrarModal('modalClientes')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: NUEVO CLIENTE ===== -->
+  <div id="modalNuevoCliente" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👤 Nuevo Cliente</h2>
+        <button class="modal-close" onclick="cerrarModal('modalNuevoCliente')">&times;</button>
+      </div>
+      <form id="formNuevoCliente">
+        <div class="form-group">
+          <label for="nombreCliente">Nombre del Cliente</label>
+          <input type="text" id="nombreCliente" required placeholder="Ej: Juan Pérez">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalNuevoCliente')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Cliente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: REPORTES ===== -->
+  <div id="modalReportes" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📊 Reportes</h2>
+        <button class="modal-close" onclick="cerrarModal('modalReportes')">&times;</button>
+      </div>
+
+      <h3 style="margin-bottom: 20px;">Ganancias Mensuales</h3>
+      <div class="form-group">
+        <label for="mesPeso">Mes</label>
+        <input type="month" id="mesReporte" value="">
+      </div>
+      <button class="btn btn-primary" onclick="cargarGananciasMensuales()" style="margin-bottom: 20px;">Cargar Reporte</button>
+
+      <div id="reporteGanancias"></div>
+
+      <hr style="margin: 30px 0; border: none; border-top: 2px solid #e5e7eb;">
+
+      <h3 style="margin-bottom: 20px;">Top Productos Vendidos</h3>
+      <button class="btn btn-primary" onclick="cargarTopProductos()" style="margin-bottom: 20px;">Ver Top 10</button>
+      <table id="tablaTopProductos" style="display: none;">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Ingresos</th>
+            <th>Ganancia</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <hr style="margin: 30px 0; border: none; border-top: 2px solid #e5e7eb;">
+
+      <h3 style="margin-bottom: 20px;">Stock Bajo</h3>
+      <button class="btn btn-primary" onclick="cargarStockBajo()" style="margin-bottom: 20px;">Ver Productos Bajo Stock</button>
+      <table id="tablaStockBajo" style="display: none;">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Stock Actual</th>
+            <th>Stock Mínimo</th>
+            <th>Faltante</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="modal-footer" style="margin-top: 30px;">
+        <button class="btn btn-primary" onclick="cerrarModal('modalReportes')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
